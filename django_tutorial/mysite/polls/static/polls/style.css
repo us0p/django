@@ -1,0 +1,8 @@
+li a {
+    color: green;
+}
+
+body {
+    background: white url("images/knight_and_grim.png");
+    background-size: contain;
+}

@@ -1,0 +1,25 @@
+{% load static %}
+<!-- The {\% static \%} tag generates the absolute URL of static files -->
+<link rel="stylesheet" href="{% static 'polls/style.css' %}">
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+        <li>
+	    <!-- <a href="/polls/{{ question.id }}/"> -->
+	    <!-- Since you defined the name argument in the path() in -->
+	    <!-- the module polls.urls, you can use the {\% url \%} -->
+	    <!-- template tag, this whay you don't need to change the -->
+	    <!-- url in two different places -->
+	    <!-- this template tag follows the form: -->
+	    <!-- {% url '[app_name]:<route_name>' params &} -->
+	    <!-- where app_name is the app namespace defined in your -->
+	    <!-- app urls.py file. -->
+	    <a href="{% url 'polls:detail' question.id %}">
+		{{ question.question_text }}
+	    </a>
+	</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
