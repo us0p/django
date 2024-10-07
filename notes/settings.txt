@@ -33,7 +33,7 @@ default settings and site-specific settings; it presents a single
 interface. It also decouples the code that uses settings from the location
 of your settings.
 
-You shouldn't alter settingd in your applications at runtime.
+You shouldn't alter settings in your applications at runtime.
 
 Security
 Because a settings file contains sensitive information, such as the 
