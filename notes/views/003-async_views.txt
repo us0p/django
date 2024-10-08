@@ -1,0 +1,6 @@
+Async views
+As well as being synchronous functions, views can also be asynchronous 
+(“async”) functions.
+Django will automatically detect these and run them in an async context. 
+However, you will need to use an async server based on ASGI to get their 
+performance benefits.

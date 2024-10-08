@@ -13,7 +13,7 @@ path to the view that should be called to handle the error condition at
 hand.
 
 The variables are:
-    handler400
-    handler403
-    handler404
-    handler500
+    handler400 = "<app_name>.<views_module>.<view_name>"
+    handler403 = "<app_name>.<views_module>.<view_name>"
+    handler404 = "<app_name>.<views_module>.<view_name>"
+    handler500 = "<app_name>.<views_module>.<view_name>"
