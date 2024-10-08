@@ -64,6 +64,14 @@ ways to configure or set class attributes:
   While your class is instantiated for each request dispatched to it, class
   attributes set through the as_view() entry point are configured only once
   at the time your URLs are imported.
+  Arguments passed this way will be assigned onto the instance that is used
+  to service a request. This means that the argument will be available by 
+  using "self". Arguments must correspond to attributes that already exist 
+  on the class (return True on a hasattr check).
+
+Each request served by a class-based view has an independent state; 
+therefore, it is safe to store state variables on the instance (i.e., 
+self.foo = 3 is a thread-safe operation).
 
 ```python
 urlpatterns = [
