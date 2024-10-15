@@ -1,64 +1,97 @@
-Django’s built-in class-based views provide a lot of functionality, but 
-some of it you may want to use separately this is true most past of the 
+Django’s built-in class-based views provide a lot of functionality, but
+some of it you may want to use separately this is true most past of the
 time when you can't for some reason use a given class based views.
 
 Mixins provide more discrete functionality.
 
 Context and template responses
-Two central mixins are provided that help in providing a consistent 
+Two central mixins are provided that help in providing a consistent
 interface to working with templates in class-based views.
 
 TemplateResponseMixin
-Every built in view which returns a TemplateResponse will call the 
+Every built in view which returns a TemplateResponse will call the
 render_to_response() method that TemplateResponseMixin provides.
 
 Attributes:
     - response_class: The response class to be returned by render_to_response
-      method. Default is TemplateResponse. The template and context of 
+      method. Default is TemplateResponse. The template and context of
       TemplateResponse instances can be altered later.
-      If you need custom template loading or custom context object 
-      instantiation, create a TemplateResponse subclass and assign it to 
+      If you need custom template loading or custom context object
+      instantiation, create a TemplateResponse subclass and assign it to
       response_class.
 
 Methods:
-    - render_to_response(context, **response_kwargs): Returns a 
+    - render_to_response(context, **response_kwargs): Returns a
       self.response_class instance.
-      If any keyword arguments are provided, they will be passed to the 
+      If any keyword arguments are provided, they will be passed to the
       constructor of the response class.
-      Calls get_template_names() to obtain the list of template names that 
+      Calls get_template_names() to obtain the list of template names that
       will be searched looking for an existent template.
 
-    - get_template_names(): Returns a list of template names to search for 
+    - get_template_names(): Returns a list of template names to search for
       when rendering the template. The first template that is found will be
-      used. The default implementation will return a list containing 
+      used. The default implementation will return a list containing
       template_name (if it is specified).
 
 ContextMixin
-Every built in view which needs context data, such as for rendering a 
-template (including TemplateResponseMixin above), should call 
-get_context_data() passing any data they want to ensure is in there as 
+Every built in view which needs context data, such as for rendering a
+template (including TemplateResponseMixin above), should call
+get_context_data() passing any data they want to ensure is in there as
 keyword arguments. in ContextMixin it returns its keyword arguments, but it
 is common to override this to add more members to the dictionary.
 
 Attributes:
-    - extra_content: A dictionary to include in the context. This is a 
+    - extra_content: A dictionary to include in the context. This is a
       convenient way of specifying some context in as_view().
 
 Methods:
-    - get_context_data(**kwargs): Returns a dictionary representing the 
-      template context. The keyword arguments provided will make up the 
-      returned context. The template context of all class-based generic 
+    - get_context_data(**kwargs): Returns a dictionary representing the
+      template context. The keyword arguments provided will make up the
+      returned context. The template context of all class-based generic
       views include a view variable that points to the View instance.
 
-Not all mixins can be used together, and not all generic class based views 
+SingleObjectMixin
+Provides a mechanism for looking up an object associated with the current
+HTTP request.
+
+Attributes:
+    - model: The modal that this view will display data for.
+    - queryset: A QuerySet that represents the objects. If provided, the
+      value of queryset spersedes the value provided for model.
+      This is a class attribute with a mutable value so care must be taken
+      when using it directly.
+      Before using it, either call its all() method or retrieve it with
+      get_queryset() which takes care of the cloning behind the scenes.
+    - pk_url_kwarg: The name of the URLConf keyword argument that contains
+      the primary key. By default is 'pk'.
+
+Methods:
+    - get_object(queryset=None): Returns the single object that this view
+    will display. If queryset is provided, that queryset will be used as
+    the source of objects; otherwise, get_queryset() will be used.
+    - get_queryset(): Returns the queryset that will be used to retrieve
+    the object that this view will display. By default, get_queryset()
+    returns the value of the queryset attribute if it is set, otherwise it
+    constructs a QuerySet by calling the all() method on the model
+    attribute’s default manager.
+
+SingleObjectTemplateResponseMixin
+A mixin class that performs template-based response rendering for views
+that operate upon a single object instance. Requires that the view it is
+mixed with provides self.object, the object instance that the view is
+operating on. self.object will usually be, but is not required to be, an
+instance of a Django model. It may be None if the view is in the process of
+constructing a new instance.
+
+Not all mixins can be used together, and not all generic class based views
 can be used with all other mixins.
 
-Each of your views should use only mixins or views from one of the groups 
-of generic class-based views: detail, list, editing and date. For example 
-it’s fine to combine TemplateView (built in view) with MultipleObjectMixin 
-(generic list), but you’re likely to have problems combining 
+Each of your views should use only mixins or views from one of the groups
+of generic class-based views: detail, list, editing and date. For example
+it’s fine to combine TemplateView (built in view) with MultipleObjectMixin
+(generic list), but you’re likely to have problems combining
 SingleObjectMixin (generic detail) with MultipleObjectMixin (generic list).
 
-If you need a class-based view that implement more than one mixin. You 
-should create different classes for each mixin and groups the expected 
+If you need a class-based view that implement more than one mixin. You
+should create different classes for each mixin and groups the expected
 behaviour under another class by calling each views .as_view() method.
